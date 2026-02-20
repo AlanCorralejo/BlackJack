@@ -25,7 +25,7 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-base font-bold text-foreground tracking-tight">
-                Black Jack 21
+                Black Jack
               </h1>
               <p className="text-xs text-muted-foreground">
                 {stats.totalSessions} {stats.totalSessions === 1 ? "sesion" : "sesiones"}

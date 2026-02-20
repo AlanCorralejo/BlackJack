@@ -20,12 +20,10 @@ import { Plus, Save } from "lucide-react"
 import { toast } from "sonner"
 
 const POPULAR_CASINOS = [
-  "Caliente",
-  "Winpot",
-  "Big Bola",
-  "PlayCity",
-  "Codere",
-  "Stardust",
+  "Vegas",
+  "Red",
+  "Emotion",
+  "Royale"
 ]
 
 interface SessionFormProps {
@@ -135,11 +133,10 @@ export function SessionForm({
                 key={name}
                 type="button"
                 onClick={() => setCasinoName(name)}
-                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
-                  casinoName === name
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${casinoName === name
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 {name}
               </button>
@@ -170,7 +167,9 @@ export function SessionForm({
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1">
             <Input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               min={0}
               max={24}
               placeholder="0"
@@ -182,7 +181,9 @@ export function SessionForm({
           </div>
           <div className="flex flex-col gap-1">
             <Input
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               min={0}
               max={59}
               placeholder="0"
@@ -203,7 +204,9 @@ export function SessionForm({
           </Label>
           <Input
             id="buyIn"
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min={0}
             placeholder="0"
             value={buyIn}
@@ -217,7 +220,9 @@ export function SessionForm({
           </Label>
           <Input
             id="cashOut"
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             min={0}
             placeholder="0"
             value={cashOut}
@@ -230,11 +235,10 @@ export function SessionForm({
       {/* Profit preview */}
       {buyIn && cashOut && (
         <div
-          className={`rounded-xl p-3 text-center font-mono text-lg font-bold ${
-            Number(cashOut) - Number(buyIn) >= 0
-              ? "bg-success/10 text-success border border-success/20"
-              : "bg-destructive/10 text-destructive border border-destructive/20"
-          }`}
+          className={`rounded-xl p-3 text-center font-mono text-lg font-bold ${Number(cashOut) - Number(buyIn) >= 0
+            ? "bg-success/10 text-success border border-success/20"
+            : "bg-destructive/10 text-destructive border border-destructive/20"
+            }`}
         >
           {Number(cashOut) - Number(buyIn) >= 0 ? "+" : ""}$
           {(Number(cashOut) - Number(buyIn)).toLocaleString()}
