@@ -5,7 +5,9 @@ import { useSessions } from "@/hooks/use-sessions"
 import { StatsDashboard } from "@/components/stats-dashboard"
 import { SessionList } from "@/components/session-list"
 import { SessionForm } from "@/components/session-form"
-import { Spade } from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { WiDaySunny } from "react-icons/wi";
+import { LuMoon } from "react-icons/lu";
 
 type Tab = "stats" | "history"
 
@@ -20,9 +22,7 @@ export default function Home() {
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-              <Spade className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <img className="h-8 w-8" src="chip_3.png" />
             <div>
               <h1 className="text-base font-bold text-foreground tracking-tight">
                 Black Jack
@@ -32,6 +32,14 @@ export default function Home() {
               </p>
             </div>
           </div>
+          <div className="flex items-center space-x-2">
+            <WiDaySunny size={25} />
+            <Switch
+              onCheckedChange={(e) => e ? document.documentElement.classList.toggle("dark") : document.documentElement.classList.remove("dark")}
+            />
+            <LuMoon size={20} />
+          </div>
+
         </div>
 
         {/* Tab Navigation */}
@@ -85,9 +93,8 @@ function TabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`relative flex-1 py-2.5 text-sm font-medium transition-colors ${
-        active ? "text-primary" : "text-muted-foreground hover:text-foreground"
-      }`}
+      className={`relative flex-1 py-2.5 text-sm font-medium transition-colors ${active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+        }`}
     >
       {label}
       {active && (

@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className="dark">
+    <html lang="es" className="">
       <body className={`${_inter.variable} ${_jetbrainsMono.variable} font-sans antialiased`}>
         {children}
         <Toaster position="top-center" />

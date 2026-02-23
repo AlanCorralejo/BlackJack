@@ -44,7 +44,7 @@ export function StatsDashboard({ stats }: { stats: Stats }) {
       </div>
     )
   }
-
+  
   return (
     <div className="flex flex-col gap-4 px-4 pb-4">
       {/* Main profit card */}
@@ -123,7 +123,7 @@ export function StatsDashboard({ stats }: { stats: Stats }) {
         <StatCard
           icon={<TrendingDown className="h-4 w-4" />}
           label="Peor Sesion"
-          value={formatCurrency(stats.worstSession)}
+          value={stats.worstSession  > 0 ? `+${formatCurrency(stats.worstSession)}` : formatCurrency(stats.worstSession)}
           accent={false}
           negative
         />

@@ -90,8 +90,8 @@ export function SessionForm({
       date,
       hours,
       minutes,
-      buyIn: Number(buyIn),
-      cashOut: Number(cashOut),
+      buyIn: Number(buyIn.replace(/,/g, "")),
+      cashOut: Number(cashOut.replace(/,/g, "")),
       notes: notes.trim() || undefined,
     })
 
@@ -210,7 +210,17 @@ export function SessionForm({
             min={0}
             placeholder="0"
             value={buyIn}
-            onChange={(e) => setBuyIn(e.target.value)}
+            onChange={(e) => {
+              // quitar todo lo que no sea número
+              const raw = e.target.value.replace(/[^\d]/g, "");
+
+              // formatear con separadores
+              const formatted = raw
+                ? new Intl.NumberFormat("en-US").format(Number(raw))
+                : "";
+
+              setBuyIn(formatted);
+            }} 
             className="bg-secondary border-border text-foreground font-mono"
           />
         </div>
@@ -226,22 +236,32 @@ export function SessionForm({
             min={0}
             placeholder="0"
             value={cashOut}
-            onChange={(e) => setCashOut(e.target.value)}
+            onChange={(e) => {
+              // quitar todo lo que no sea número
+              const raw = e.target.value.replace(/[^\d]/g, "");
+
+              // formatear con separadores
+              const formatted = raw
+                ? new Intl.NumberFormat("en-US").format(Number(raw))
+                : "";
+
+              setCashOut(formatted);
+            }} 
             className="bg-secondary border-border text-foreground font-mono"
           />
         </div>
       </div>
 
       {/* Profit preview */}
-      {buyIn && cashOut && (
+      {Number(buyIn.replace(/,/g, "")) && Number(cashOut.replace(/,/g, "")) && (
         <div
-          className={`rounded-xl p-3 text-center font-mono text-lg font-bold ${Number(cashOut) - Number(buyIn) >= 0
+          className={`rounded-xl p-3 text-center font-mono text-lg font-bold ${Number(cashOut.replace(/,/g, "")) - Number(buyIn.replace(/,/g, "")) >= 0
             ? "bg-success/10 text-success border border-success/20"
             : "bg-destructive/10 text-destructive border border-destructive/20"
             }`}
         >
-          {Number(cashOut) - Number(buyIn) >= 0 ? "+" : ""}$
-          {(Number(cashOut) - Number(buyIn)).toLocaleString()}
+          {Number(Number(cashOut.replace(/,/g, ""))) - Number(Number(buyIn.replace(/,/g, ""))) >= 0 ? "+" : ""}$
+          {(Number(Number(cashOut.replace(/,/g, ""))) - Number(Number(buyIn.replace(/,/g, "")))).toLocaleString()}
         </div>
       )}
 
