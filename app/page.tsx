@@ -21,13 +21,12 @@ export default function Home() {
   useEffect(() => {
     const savedMode = localStorage.getItem("MODE") === "dark"
     document.documentElement.classList.toggle("dark", savedMode)
-    console.log(savedMode)
     setIsDark(savedMode)
   }, [])
 
 
   return (
-    <main className={`relative mx-auto flex min-h-dvh max-w-lg flex-col bg-background ${isDark ? "dark" : ""}`}>
+    <main className={`relative mx-auto flex min-h-dvh max-w-lg flex-col bg-background`}>
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="flex items-center justify-between px-4 py-3">
