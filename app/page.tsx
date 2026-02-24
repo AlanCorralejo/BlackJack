@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSessions } from "@/hooks/use-sessions"
 import { StatsDashboard } from "@/components/stats-dashboard"
 import { SessionList } from "@/components/session-list"
@@ -15,9 +15,19 @@ export default function Home() {
   const { sessions, stats, addSession, deleteSession, editSession } = useSessions()
   const [activeTab, setActiveTab] = useState<Tab>("stats")
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [isDark, setIsDark] = useState(false)
+
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem("MODE") === "dark"
+    document.documentElement.classList.toggle("dark", savedMode)
+    console.log(savedMode)
+    setIsDark(savedMode)
+  }, [])
+
 
   return (
-    <main className="relative mx-auto flex min-h-dvh max-w-lg flex-col bg-background">
+    <main className={`relative mx-auto flex min-h-dvh max-w-lg flex-col bg-background ${isDark ? "dark" : ""}`}>
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="flex items-center justify-between px-4 py-3">
@@ -35,7 +45,12 @@ export default function Home() {
           <div className="flex items-center space-x-2">
             <WiDaySunny size={25} />
             <Switch
-              onCheckedChange={(e) => e ? document.documentElement.classList.toggle("dark") : document.documentElement.classList.remove("dark")}
+              checked={isDark}
+              onCheckedChange={(checked) => {
+                setIsDark(checked)
+                localStorage.setItem("MODE", checked ? "dark" : "")
+                document.documentElement.classList.toggle("dark", checked)
+              }}
             />
             <LuMoon size={20} />
           </div>
