@@ -28,6 +28,10 @@ import {
 } from "@/components/ui/alert-dialog"
 import { SessionForm } from "@/components/session-form"
 import { toast } from "sonner"
+import { UseFormReturn } from "react-hook-form"
+import { CreateSessionData } from "@/lib/models/session-model"
+import { deleteDoc, doc } from "firebase/firestore"
+import { db } from "@/app/firebase"
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("es-MX", {
@@ -36,14 +40,6 @@ function formatCurrency(amount: number) {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount)
-}
-
-function formatTime(minutes: number) {
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  if (h === 0) return `${m}min`
-  if (m === 0) return `${h}h`
-  return `${h}h ${m}m`
 }
 
 function formatDate(dateStr: string) {
@@ -59,13 +55,13 @@ function formatDate(dateStr: string) {
 interface SessionListProps {
   sessions: Session[]
   onDelete: (id: string) => void
-  onEdit: (id: string, data: SessionFormData) => void
+  // onEdit: (isEditing: boolean) => void,
 }
 
-export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
+export function SessionList({ sessions, onDelete }: SessionListProps) {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null)
   const [editingSession, setEditingSession] = useState<Session | null>(null)
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string>("")
 
   if (sessions.length === 0) {
     return (
@@ -82,7 +78,6 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
     )
   }
 
-  // Group sessions by month
   const grouped = sessions.reduce<Record<string, Session[]>>((acc, session) => {
     const date = new Date(session.date + "T12:00:00")
     const key = date.toLocaleDateString("es-MX", {
@@ -93,6 +88,20 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
     acc[key].push(session)
     return acc
   }, {})
+
+  const handleDeleteSession = async() => {
+    try {
+      const docRef = doc(db, "blackjack_sesiones", deletingId);
+
+      await deleteDoc(docRef);
+
+    } catch (error) {
+      throw error; 
+    }
+    toast("Sesion eliminada")
+    setDeletingId("")
+    setSelectedSession(null)
+  }
 
   return (
     <>
@@ -105,13 +114,12 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
           return (
             <div key={month} className="flex flex-col gap-2">
               <div className="flex items-center justify-between px-1">
-                <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground capitalize">
+                <h3 className="text-xs font-medium tracking-wider text-muted-foreground capitalize">
                   {month}
                 </h3>
                 <span
-                  className={`text-xs font-mono font-semibold ${
-                    monthProfit >= 0 ? "text-success" : "text-destructive"
-                  }`}
+                  className={`text-xs font-mono font-semibold ${monthProfit >= 0 ? "text-success" : "text-destructive"
+                    }`}
                 >
                   {monthProfit >= 0 ? "+" : ""}
                   {formatCurrency(monthProfit)}
@@ -130,11 +138,10 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
                       className="flex items-center gap-3 rounded-xl border border-border bg-card p-3.5 transition-colors hover:bg-secondary text-left w-full"
                     >
                       <div
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold font-mono ${
-                          isProfit
-                            ? "bg-success/15 text-success"
-                            : "bg-destructive/15 text-destructive"
-                        }`}
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold font-mono ${isProfit
+                          ? "bg-success/15 text-success"
+                          : "bg-destructive/15 text-destructive"
+                          }`}
                       >
                         {isProfit ? "W" : "L"}
                       </div>
@@ -146,14 +153,15 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
                           <span>{formatDate(session.date)}</span>
                           <span className="text-border">|</span>
                           <Clock className="h-3 w-3" />
-                          <span>{formatTime(session.timePlayedMinutes)}</span>
+                          <div className="flex flex-col">
+                            <span>{session.hours}h</span>
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span
-                          className={`text-sm font-bold font-mono ${
-                            isProfit ? "text-success" : "text-destructive"
-                          }`}
+                          className={`text-sm font-bold font-mono ${isProfit ? "text-success" : "text-destructive"
+                            }`}
                         >
                           {isProfit ? "+" : ""}
                           {formatCurrency(profit)}
@@ -190,21 +198,19 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
               <div className="flex flex-col gap-4">
                 {/* Profit display */}
                 <div
-                  className={`rounded-xl p-4 text-center ${
-                    selectedSession.cashOut - selectedSession.buyIn >= 0
-                      ? "bg-success/10 border border-success/20"
-                      : "bg-destructive/10 border border-destructive/20"
-                  }`}
+                  className={`rounded-xl p-4 text-center ${selectedSession.cashOut - selectedSession.buyIn >= 0
+                    ? "bg-success/10 border border-success/20"
+                    : "bg-destructive/10 border border-destructive/20"
+                    }`}
                 >
                   <p className="text-xs text-muted-foreground uppercase tracking-wider">
                     Resultado
                   </p>
                   <p
-                    className={`mt-1 text-2xl font-bold font-mono ${
-                      selectedSession.cashOut - selectedSession.buyIn >= 0
-                        ? "text-success"
-                        : "text-destructive"
-                    }`}
+                    className={`mt-1 text-2xl font-bold font-mono ${selectedSession.cashOut - selectedSession.buyIn >= 0
+                      ? "text-success"
+                      : "text-destructive"
+                      }`}
                   >
                     {selectedSession.cashOut - selectedSession.buyIn >= 0
                       ? "+"
@@ -227,7 +233,7 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
                   />
                   <DetailItem
                     label="Tiempo"
-                    value={formatTime(selectedSession.timePlayedMinutes)}
+                    value={`${selectedSession.hours.toString()} horas`}
                   />
                   <DetailItem
                     label="ROI"
@@ -290,11 +296,6 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
           {editingSession && (
             <SessionForm
               editSession={editingSession}
-              onSubmit={(data) => {
-                onEdit(editingSession.id, data)
-                setEditingSession(null)
-                setSelectedSession(null)
-              }}
               onClose={() => setEditingSession(null)}
             />
           )}
@@ -305,7 +306,7 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
       <AlertDialog
         open={!!deletingId}
         onOpenChange={(open) => {
-          if (!open) setDeletingId(null)
+          if (!open) setDeletingId("")
         }}
       >
         <AlertDialogContent className="bg-card border-border">
@@ -324,10 +325,7 @@ export function SessionList({ sessions, onDelete, onEdit }: SessionListProps) {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               onClick={() => {
                 if (deletingId) {
-                  onDelete(deletingId)
-                  toast("Sesion eliminada")
-                  setDeletingId(null)
-                  setSelectedSession(null)
+                  handleDeleteSession()
                 }
               }}
             >

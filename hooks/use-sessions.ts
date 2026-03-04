@@ -52,21 +52,6 @@ export function useSessions() {
     }
   })()
 
-  const addSession = useCallback((formData: SessionFormData) => {
-    const current = getSessions()
-    const newSession: Session = {
-      id: crypto.randomUUID(),
-      casinoName: formData.casinoName,
-      date: formData.date,
-      timePlayedMinutes: formData.hours * 60 + formData.minutes,
-      buyIn: formData.buyIn,
-      cashOut: formData.cashOut,
-      notes: formData.notes,
-      createdAt: new Date().toISOString(),
-    }
-    saveSessions([newSession, ...current])
-    return newSession
-  }, [])
 
   const deleteSession = useCallback((id: string) => {
     const current = getSessions()
@@ -92,43 +77,9 @@ export function useSessions() {
     )
   }, [])
 
-  const stats: Stats = (() => {
-    if (sessions.length === 0) {
-      return {
-        totalSessions: 0,
-        totalBuyIn: 0,
-        totalCashOut: 0,
-        netProfit: 0,
-        winRate: 0,
-        avgSessionTime: 0,
-        bestSession: 0,
-        worstSession: 0,
-        avgProfit: 0,
-      }
-    }
-
-    const profits = sessions.map((s) => s.cashOut - s.buyIn)
-    const totalBuyIn = sessions.reduce((sum, s) => sum + s.buyIn, 0)
-    const totalCashOut = sessions.reduce((sum, s) => sum + s.cashOut, 0)
-    const wins = sessions.filter((s) => s.cashOut > s.buyIn).length
-    const totalTime = sessions.reduce((sum, s) => sum + s.timePlayedMinutes, 0)
-
-    return {
-      totalSessions: sessions.length,
-      totalBuyIn,
-      totalCashOut,
-      netProfit: totalCashOut - totalBuyIn,
-      winRate: (wins / sessions.length) * 100,
-      avgSessionTime: totalTime / sessions.length,
-      bestSession: Math.max(...profits),
-      worstSession: Math.min(...profits),
-      avgProfit: (totalCashOut - totalBuyIn) / sessions.length,
-    }
-  })()
-
   const sortedSessions = [...sessions].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   )
 
-  return { sessions: sortedSessions, stats, addSession, deleteSession, editSession }
+  return { sessions: sortedSessions, deleteSession, editSession }
 }

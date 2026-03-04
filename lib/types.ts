@@ -2,7 +2,8 @@ export interface Session {
   id: string
   casinoName: string
   date: string
-  timePlayedMinutes: number
+  hours: number,
+  minutes: number,
   buyIn: number
   cashOut: number
   notes?: string
