@@ -8,21 +8,21 @@ const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const _jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
-  title: 'BlackjackTracker - Registro de Sesiones',
+  title: 'Black Jack - Registro de Sesiones',
   description: 'Registra y analiza tus sesiones de blackjack en el casino. Lleva control de ganancias, perdidas y estadisticas.',
   generator: 'v0.app',
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
+        url: 'chip_3.png',
         media: '(prefers-color-scheme: light)',
       },
       {
-        url: '/icon-dark-32x32.png',
+        url: 'chip_3.png',
         media: '(prefers-color-scheme: dark)',
       },
       {
-        url: '/icon.svg',
+        url: 'chip_3.png',
         type: 'image/svg+xml',
       },
     ],

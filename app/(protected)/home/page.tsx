@@ -15,6 +15,7 @@ import { Session } from "@/lib/types"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { CirclePower } from "lucide-react"
 import { SlMenu } from "react-icons/sl";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
 type Tab = "stats" | "history"
@@ -145,30 +146,34 @@ export default function Home() {
 
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex px-4 pb-0">
-          <TabButton
-            label="Resumen"
-            active={activeTab === "stats"}
-            onClick={() => setActiveTab("stats")}
-          />
-          <TabButton
-            label="Historial"
-            active={activeTab === "history"}
-            onClick={() => setActiveTab("history")}
-          />
-        </div>
       </header>
-
-      {/* Content */}
-      <div className="flex-1 pt-4">
-        {activeTab === "stats" ? (
-          <StatsDashboard stats={stats} />
-        ) : (
-          <SessionList
-            sessions={sesiones}
-          />
-        )}
+      <div>
+        <Tabs>
+          <TabsList className="w-full mb-4">
+            <TabsTrigger value="resumen">
+              <TabButton
+                label="Resumen"
+                active={activeTab === "stats"}
+                onClick={() => setActiveTab("stats")}
+              />
+            </TabsTrigger>
+            <TabsTrigger value="historial">
+              <TabButton
+                label="Historial"
+                active={activeTab === "history"}
+                onClick={() => setActiveTab("history")}
+              />
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="resumen">
+            <StatsDashboard stats={stats} />
+          </TabsContent>
+          <TabsContent value="historial">
+            <SessionList
+              sessions={sesiones}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Floating Action Button */}
@@ -190,8 +195,7 @@ function TabButton({
   onClick: () => void
 }) {
   return (
-    <button
-      type="button"
+    <p
       onClick={onClick}
       className={`relative flex-1 py-2.5 text-sm font-medium transition-colors ${active ? "text-primary" : "text-muted-foreground hover:text-foreground"
         }`}
@@ -200,6 +204,6 @@ function TabButton({
       {active && (
         <span className="absolute bottom-0 left-1/4 right-1/4 h-0.5 rounded-full bg-primary" />
       )}
-    </button>
+    </p>
   )
 }
