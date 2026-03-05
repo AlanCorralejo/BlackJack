@@ -51,8 +51,8 @@ export function StatsDashboard({ stats }: { stats: Stats }) {
       <div
         className={`relative overflow-hidden rounded-2xl p-5 ${
           isProfit
-            ? "bg-success/10 border border-success/20"
-            : "bg-destructive/10 border border-destructive/20"
+            ? "bg-success/10 border border-success/50"
+            : "bg-destructive/10 border border-destructive/50"
         }`}
       >
         <div className="flex items-center justify-between">

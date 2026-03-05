@@ -54,11 +54,9 @@ function formatDate(dateStr: string) {
 
 interface SessionListProps {
   sessions: Session[]
-  onDelete: (id: string) => void
-  // onEdit: (isEditing: boolean) => void,
 }
 
-export function SessionList({ sessions, onDelete }: SessionListProps) {
+export function SessionList({ sessions }: SessionListProps) {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null)
   const [editingSession, setEditingSession] = useState<Session | null>(null)
   const [deletingId, setDeletingId] = useState<string>("")

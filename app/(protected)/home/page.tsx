@@ -1,27 +1,25 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useSessions } from "@/hooks/use-sessions"
 import { StatsDashboard } from "@/components/stats-dashboard"
 import { SessionList } from "@/components/session-list"
 import { SessionForm } from "@/components/session-form"
 import { Switch } from "@/components/ui/switch"
 import { WiDaySunny } from "react-icons/wi";
 import { LuMoon } from "react-icons/lu";
-import { app, db } from '../../firebase'; // Importa la instancia de Firestore
-import { Button } from "@/components/ui/button"
+import { app, db } from '../../firebase';
 import { getAuth, signOut, User } from "firebase/auth"
 import { redirect } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { CreateSessionData } from "@/lib/models/session-model"
-import { addDoc, collection, getDocs, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore"
-import { toast } from "sonner"
+import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore"
 import { Session } from "@/lib/types"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { CirclePower } from "lucide-react"
+import { SlMenu } from "react-icons/sl";
+
 
 type Tab = "stats" | "history"
 
 export default function Home() {
-  const { deleteSession, editSession } = useSessions()
   const [sesiones, setSesiones] = useState<Session[]>([])
   const [activeTab, setActiveTab] = useState<Tab>("stats")
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -42,7 +40,7 @@ export default function Home() {
     worstSession: Math.min(...sesiones.map((s) => s.cashOut - s.buyIn)),
     avgProfit: (sesiones.reduce((sum, s) => sum + s.cashOut, 0) - sesiones.reduce((sum, s) => sum + s.buyIn, 0)) / sesiones.length,
   }
-  
+
   const setupRealtimeDataListener = (currentUser: User | null, setSesiones: (sessions: Session[]) => void) => {
     if (!currentUser) {
       setSesiones([]);
@@ -134,7 +132,17 @@ export default function Home() {
             />
             <LuMoon size={20} />
           </div>
-          <Button onClick={() => logOut()}>Log out</Button>
+          <div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <SlMenu />
+              </PopoverTrigger>
+              <PopoverContent className="w-auto">
+                <div onClick={() => logOut()} className="flex items-center space-x-2"><CirclePower size={18} /> <p className="text-sm">Cerrar sesión</p></div>
+              </PopoverContent>
+            </Popover>
+          </div>
+
         </div>
 
         {/* Tab Navigation */}
@@ -159,8 +167,6 @@ export default function Home() {
         ) : (
           <SessionList
             sessions={sesiones}
-            onDelete={deleteSession}
-          // onEdit={editSession}
           />
         )}
       </div>
