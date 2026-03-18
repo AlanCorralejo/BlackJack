@@ -7,7 +7,8 @@ export interface Session {
   buyIn: number
   cashOut: number
   notes?: string
-  createdAt: string
+  createdAt: string,
+  totalWin: number
 }
 
 export interface SessionFormData {

@@ -94,7 +94,8 @@ export function SessionForm({
     const formatedValues = {
       ...values,
       buyIn: parseMoney(values.buyIn),
-      cashOut: parseMoney(values.cashOut)
+      cashOut: parseMoney(values.cashOut),
+      totalWin: parseMoney(values.cashOut) - parseMoney(values.buyIn)
     }
     if (isEditing && editSession) {
       try {

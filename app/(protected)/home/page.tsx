@@ -16,9 +16,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CirclePower } from "lucide-react"
 import { SlMenu } from "react-icons/sl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import StatsGraphics from "@/components/Graficas/stats-graphics"
 
 
-type Tab = "stats" | "history"
+type Tab = "stats" | "history" | "graficas"
 
 export default function Home() {
   const [sesiones, setSesiones] = useState<Session[]>([])
@@ -41,7 +42,6 @@ export default function Home() {
     worstSession: Math.min(...sesiones.map((s) => s.cashOut - s.buyIn)),
     avgProfit: (sesiones.reduce((sum, s) => sum + s.cashOut, 0) - sesiones.reduce((sum, s) => sum + s.buyIn, 0)) / sesiones.length,
   }
-
   const setupRealtimeDataListener = (currentUser: User | null, setSesiones: (sessions: Session[]) => void) => {
     if (!currentUser) {
       setSesiones([]);
@@ -95,7 +95,6 @@ export default function Home() {
       setSesiones([]);
       unsubscribeFromFirestore = () => { };
     }
-
     return () => {
       if (unsubscribeFromFirestore) {
         unsubscribeFromFirestore();
@@ -148,7 +147,7 @@ export default function Home() {
 
       </header>
       <div>
-        <Tabs>
+        <Tabs defaultValue="resumen">
           <TabsList className="w-full mb-4">
             <TabsTrigger value="resumen">
               <TabButton
@@ -164,6 +163,13 @@ export default function Home() {
                 onClick={() => setActiveTab("history")}
               />
             </TabsTrigger>
+            <TabsTrigger value="graficas">
+              <TabButton
+                label="Graficas"
+                active={activeTab === "graficas"}
+                onClick={() => setActiveTab("graficas")}
+              />
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="resumen">
             <StatsDashboard stats={stats} />
@@ -172,6 +178,9 @@ export default function Home() {
             <SessionList
               sessions={sesiones}
             />
+          </TabsContent>
+          <TabsContent value="graficas">
+              <StatsGraphics sesiones={sesiones}  />
           </TabsContent>
         </Tabs>
       </div>

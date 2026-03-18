@@ -105,7 +105,7 @@ export function StatsDashboard({ stats }: { stats: Stats }) {
         <StatCard
           icon={<Clock className="h-4 w-4" />}
           label="Tiempo Prom."
-          value={`${stats.avgSessionTime}h`}
+          value={`${stats.avgSessionTime.toFixed(2)}h`}
           accent={false}
         />
         <StatCard
