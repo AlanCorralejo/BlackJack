@@ -20,7 +20,7 @@ const GraficaBankRollAcumulado = ({ sesiones, filtros }: GraficaBankRollAcumulad
         "Septiempre", "Octubre", "Noviembre", "Diciembre"]
 
     const chartData = sesiones.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(x => Number(x.date.split('-')[0]) === filtros.year)
-        .filter(x => Number(x.date.split('-')[1]) === filtros.month).reduce((acc, curr, index) => {
+        .reduce((acc, curr, index) => {
             
             const lastValue = acc[index -1]?.totalWin ? acc[index -1]?.totalWin : 0
             

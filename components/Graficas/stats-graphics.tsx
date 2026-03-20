@@ -40,7 +40,6 @@ const StatsGraphics = ({ sesiones }: SessionGraphicProps) => {
         value: currentYear + i,
         isEnable: true
     }));
-
     return (
         <div className="mx-auto space-y-6 px-4">
             <div className="flex w-full px-4 mx-auto space-x-2 border p-2 rounded-[10px]">

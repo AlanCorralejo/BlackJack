@@ -87,14 +87,32 @@ export function SessionList({ sessions }: SessionListProps) {
     return acc
   }, {})
 
-  const handleDeleteSession = async() => {
+  const meses: any = {
+    enero: 1, febrero: 2, marzo: 3, abril: 4,
+    mayo: 5, junio: 6, julio: 7, agosto: 8,
+    septiembre: 9, octubre: 10, noviembre: 11, diciembre: 12
+  };
+
+  function parsearMes(clave: string) {
+    // clave ejemplo: "marzo de 2026"
+    const [mes, , anio] = clave.split(" ");
+    return new Date(Number(anio), meses[mes] - 1);
+  }
+
+  const ordenado = Object.fromEntries(
+    Object.entries(grouped)
+      .sort(([a], [b]) => parsearMes(b).getTime() - parsearMes(a).getTime())
+      .map(([mes, sesiones]) => [mes, sesiones.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())])
+  );
+  
+  const handleDeleteSession = async () => {
     try {
       const docRef = doc(db, "blackjack_sesiones", deletingId);
 
       await deleteDoc(docRef);
 
     } catch (error) {
-      throw error; 
+      throw error;
     }
     toast("Sesion eliminada")
     setDeletingId("")
@@ -104,7 +122,7 @@ export function SessionList({ sessions }: SessionListProps) {
   return (
     <>
       <div className="flex flex-col gap-5 px-4 pb-24">
-        {Object.entries(grouped).map(([month, monthSessions]) => {
+        {Object.entries(ordenado).map(([month, monthSessions]) => {
           const monthProfit = monthSessions.reduce(
             (sum, s) => sum + (s.cashOut - s.buyIn),
             0
