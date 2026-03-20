@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { StatsDashboard } from "@/components/stats-dashboard"
 import { SessionList } from "@/components/session-list"
 import { SessionForm } from "@/components/session-form"
@@ -27,6 +27,11 @@ export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [isDark, setIsDark] = useState(false)
   const auth = getAuth(app);
+
+  const TABS: Tab[] = ["stats", "history", "graficas"]
+  const TAB_VALUES = ["resumen", "historial", "graficas"]
+  const touchStartX = useRef<number>(0)
+  const [currentTabIndex, setCurrentTabIndex] = useState(0)
 
   const stats = {
     profits: sesiones.map((s) => s.cashOut - s.buyIn),
@@ -77,6 +82,26 @@ export default function Home() {
 
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
+    }
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const deltaX = touchStartX.current - e.changedTouches[0].clientX
+
+    if (Math.abs(deltaX) < 50) return // Ignora swipes muy cortos
+
+    if (deltaX > 0 && currentTabIndex < TABS.length - 1) {
+      // Swipe izquierda → siguiente tab
+      setCurrentTabIndex(prev => prev + 1)
+      setActiveTab(TABS[currentTabIndex + 1])
+    } else if (deltaX < 0 && currentTabIndex > 0) {
+      // Swipe derecha → tab anterior
+      setCurrentTabIndex(prev => prev - 1)
+      setActiveTab(TABS[currentTabIndex - 1])
     }
   }
 
@@ -157,7 +182,13 @@ export default function Home() {
 
       </header>
       <div>
-        <Tabs defaultValue="resumen">
+        <Tabs
+          value={TAB_VALUES[currentTabIndex]}
+          onValueChange={(val) => {
+            const idx = TAB_VALUES.indexOf(val)
+            setCurrentTabIndex(idx)
+            setActiveTab(TABS[idx])
+          }}>
           <TabsList className="w-full mb-4">
             <TabsTrigger value="resumen">
               <TabButton
@@ -181,17 +212,20 @@ export default function Home() {
               />
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="resumen">
-            <StatsDashboard stats={stats} />
-          </TabsContent>
-          <TabsContent value="historial">
-            <SessionList
-              sessions={sesiones}
-            />
-          </TabsContent>
-          <TabsContent value="graficas">
-            <StatsGraphics sesiones={sesiones} />
-          </TabsContent>
+          <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+            <TabsContent value="resumen">
+              <StatsDashboard stats={stats} />
+            </TabsContent>
+            <TabsContent value="historial">
+              <SessionList
+                sessions={sesiones}
+              />
+            </TabsContent>
+            <TabsContent value="graficas">
+              <StatsGraphics sesiones={sesiones} />
+            </TabsContent>
+          </div>
+
         </Tabs>
       </div>
 
