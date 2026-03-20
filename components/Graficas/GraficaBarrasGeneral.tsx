@@ -47,7 +47,7 @@ const GraficaBarrasGeneral = ({ sesiones, filtros }: GraficaBarrasGeneralProps) 
                 <VscGraph fill="#32CD32" />
                 <p>Ganancias por mes</p>
             </div>
-            <ChartContainer className="mx-auto aspect-square max-h-62.5 w-full " config={chartConfig}>
+            <ChartContainer config={chartConfig}>
                 <BarChart
                     accessibilityLayer
                     data={chartData}
