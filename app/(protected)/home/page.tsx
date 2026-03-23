@@ -113,15 +113,16 @@ export default function Home() {
     localStorage.setItem('MODE', dark ? 'dark' : '')
     document.documentElement.classList.toggle('dark', dark)
 
-    let meta = document.querySelector('meta[name="theme-color"]')
-
-    if (!meta) {
-      meta = document.createElement('meta')
-      meta.setAttribute('name', 'theme-color')
-      document.head.appendChild(meta)
+    // Safari iOS fix: remove and recreate instead of just updating
+    const existingMeta = document.querySelector('meta[name="theme-color"]')
+    if (existingMeta) {
+      existingMeta.remove()
     }
 
+    const meta = document.createElement('meta')
+    meta.setAttribute('name', 'theme-color')
     meta.setAttribute('content', dark ? '#0f172a' : '#ffffff')
+    document.head.appendChild(meta)
   }
 
   useEffect(() => {
