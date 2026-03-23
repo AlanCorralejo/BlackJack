@@ -32,6 +32,7 @@ export default function Home() {
   const TAB_VALUES = ["resumen", "historial", "graficas"]
   const touchStartX = useRef<number>(0)
   const [currentTabIndex, setCurrentTabIndex] = useState(0)
+  const [sliding, setSliding] = useState<"left" | "right" | null>(null)
 
   const stats = {
     profits: sesiones.map((s) => s.cashOut - s.buyIn),
@@ -91,18 +92,20 @@ export default function Home() {
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     const deltaX = touchStartX.current - e.changedTouches[0].clientX
+    if (Math.abs(deltaX) < 50) return
 
-    if (Math.abs(deltaX) < 50) return // Ignora swipes muy cortos
+    const direction = deltaX > 0 ? "left" : "right"
+    const nextIndex = deltaX > 0 ? currentTabIndex + 1 : currentTabIndex - 1
 
-    if (deltaX > 0 && currentTabIndex < TABS.length - 1) {
-      // Swipe izquierda → siguiente tab
-      setCurrentTabIndex(prev => prev + 1)
-      setActiveTab(TABS[currentTabIndex + 1])
-    } else if (deltaX < 0 && currentTabIndex > 0) {
-      // Swipe derecha → tab anterior
-      setCurrentTabIndex(prev => prev - 1)
-      setActiveTab(TABS[currentTabIndex - 1])
-    }
+    if (nextIndex < 0 || nextIndex >= TABS.length) return
+
+    setSliding(direction)
+
+    setTimeout(() => {
+      setCurrentTabIndex(nextIndex)
+      setActiveTab(TABS[nextIndex])
+      setSliding(null)
+    }, 250)
   }
 
   const applyTheme = (dark: boolean) => {
@@ -165,7 +168,7 @@ export default function Home() {
             <WiDaySunny size={25} />
             <Switch
               checked={isDark}
-              onCheckedChange={(checked) => {applyTheme(checked)}}
+              onCheckedChange={(checked) => { applyTheme(checked) }}
             />
             <LuMoon size={20} />
           </div>
@@ -214,7 +217,20 @@ export default function Home() {
               />
             </TabsTrigger>
           </TabsList>
-          <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+          <div
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            style={{
+              transform: sliding === "left"
+                ? "translateX(-30px)"
+                : sliding === "right"
+                  ? "translateX(30px)"
+                  : "translateX(0)",
+              opacity: sliding ? 0 : 1,
+              transition: sliding
+                ? "transform 250ms ease, opacity 250ms ease"
+                : "none",
+            }}>
             <TabsContent value="resumen">
               <StatsDashboard stats={stats} />
             </TabsContent>
