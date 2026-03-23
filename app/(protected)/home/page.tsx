@@ -113,7 +113,7 @@ export default function Home() {
     localStorage.setItem('MODE', dark ? 'dark' : '')
     document.documentElement.classList.toggle('dark', dark)
 
-    // Safari iOS fix: remove and recreate instead of just updating
+    // Primer intento inmediato
     const existingMeta = document.querySelector('meta[name="theme-color"]')
     if (existingMeta) {
       existingMeta.remove()
@@ -123,6 +123,17 @@ export default function Home() {
     meta.setAttribute('name', 'theme-color')
     meta.setAttribute('content', dark ? '#0f172a' : '#ffffff')
     document.head.appendChild(meta)
+
+    // Safari iOS fix: segundo intento con delay
+    setTimeout(() => {
+      const m = document.querySelector('meta[name="theme-color"]')
+      if (m) m.remove()
+
+      const newMeta = document.createElement('meta')
+      newMeta.setAttribute('name', 'theme-color')
+      newMeta.setAttribute('content', dark ? '#0f172a' : '#ffffff')
+      document.head.appendChild(newMeta)
+    }, 50)
   }
 
   useEffect(() => {
@@ -130,6 +141,7 @@ export default function Home() {
     document.documentElement.classList.toggle("dark", savedMode)
     setIsDark(savedMode)
   }, [])
+
 
   useEffect(() => {
     let unsubscribeFromFirestore: () => void;
