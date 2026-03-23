@@ -1,15 +1,17 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import Script from 'next/script'
 import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
-const _inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const _jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
+const _inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const _jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' })
 
 export const metadata: Metadata = {
   title: 'Black Jack - Registro de Sesiones',
-  description: 'Registra y analiza tus sesiones de blackjack en el casino. Lleva control de ganancias, perdidas y estadisticas.',
+  description:
+    'Registra y analiza tus sesiones de blackjack en el casino. Lleva control de ganancias, perdidas y estadisticas.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -31,7 +33,6 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#1a1a2e',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -44,7 +45,32 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className="">
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`
+            (function () {
+              var isDark = localStorage.getItem("MODE") === "dark";
+
+              if (isDark) {
+                document.documentElement.classList.add("dark");
+              } else {
+                document.documentElement.classList.remove("dark");
+              }
+
+              var meta = document.querySelector('meta[name="theme-color"]');
+
+              if (!meta) {
+                meta = document.createElement("meta");
+                meta.setAttribute("name", "theme-color");
+                document.head.appendChild(meta);
+              }
+
+              meta.setAttribute("content", isDark ? "#0f172a" : "#ffffff");
+            })();
+          `}
+        </Script>
+      </head>
       <body className={`${_inter.variable} ${_jetbrainsMono.variable} font-sans antialiased`}>
         {children}
         <Toaster position="top-center" />

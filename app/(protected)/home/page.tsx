@@ -105,6 +105,22 @@ export default function Home() {
     }
   }
 
+  const applyTheme = (dark: boolean) => {
+    setIsDark(dark)
+    localStorage.setItem('MODE', dark ? 'dark' : '')
+    document.documentElement.classList.toggle('dark', dark)
+
+    let meta = document.querySelector('meta[name="theme-color"]')
+
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.setAttribute('name', 'theme-color')
+      document.head.appendChild(meta)
+    }
+
+    meta.setAttribute('content', dark ? '#0f172a' : '#ffffff')
+  }
+
   useEffect(() => {
     const savedMode = localStorage.getItem("MODE") === "dark"
     document.documentElement.classList.toggle("dark", savedMode)
@@ -149,21 +165,7 @@ export default function Home() {
             <WiDaySunny size={25} />
             <Switch
               checked={isDark}
-              onCheckedChange={(checked) => {
-                setIsDark(checked)
-                localStorage.setItem("MODE", checked ? "dark" : "")
-                document.documentElement.classList.toggle("dark", checked)
-
-                let meta = document.querySelector('meta[name="theme-color"]')
-
-                if (!meta) {
-                  meta = document.createElement("meta")
-                  meta.setAttribute("name", "theme-color")
-                  document.head.appendChild(meta)
-                }
-
-                meta.setAttribute("content", checked ? "#0f172a" : "#ffffff")
-              }}
+              onCheckedChange={(checked) => {applyTheme(checked)}}
             />
             <LuMoon size={20} />
           </div>
