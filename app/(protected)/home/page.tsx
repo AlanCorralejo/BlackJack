@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch"
 import { WiDaySunny } from "react-icons/wi";
 import { LuMoon } from "react-icons/lu";
 import { app, db } from '../../firebase';
-import { getAuth, signOut, User } from "firebase/auth"
+import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth"
 import { redirect } from "next/navigation"
 import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore"
 import { Session } from "@/lib/types"
@@ -144,21 +144,25 @@ export default function Home() {
 
 
   useEffect(() => {
-    let unsubscribeFromFirestore: () => void;
+  let unsubscribeFirestore: () => void = () => {};
 
-    if (auth.currentUser) {
-      unsubscribeFromFirestore = setupRealtimeDataListener(auth.currentUser, setSesiones);
+  const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    // Limpia el listener anterior antes de crear uno nuevo
+    unsubscribeFirestore();
+
+    if (user) {
+      unsubscribeFirestore = setupRealtimeDataListener(user, setSesiones);
     } else {
       setSesiones([]);
-      unsubscribeFromFirestore = () => { };
+      redirect('/login');
     }
-    return () => {
-      if (unsubscribeFromFirestore) {
-        unsubscribeFromFirestore();
-        console.log("Listener de datos de sesiones detenido.");
-      }
-    };
-  }, [auth.currentUser]);
+  });
+
+  return () => {
+    unsubscribeAuth();
+    unsubscribeFirestore();
+  };
+}, []);
 
 
   return (
