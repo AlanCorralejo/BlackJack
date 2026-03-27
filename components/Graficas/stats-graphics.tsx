@@ -5,7 +5,7 @@ import { FilterDate } from "@/lib/models/stats-graph-models";
 import GraficaBarrasGeneral from "./GraficaBarrasGeneral";
 import GraficaBalanceAcumuladoDiario from "./GraficaBalanceAcumuladoDiario";
 import GraficaBankRollAcumulado from "./GraficaBankRollAcumulado";
-import GraficaWinRate from "./GraficaWinRate";
+import GraficaGananciaPorCasino from "./GraficaGananciaPorCasino";
 
 interface SessionGraphicProps {
     sesiones: Session[]
@@ -72,9 +72,9 @@ const StatsGraphics = ({ sesiones }: SessionGraphicProps) => {
             </div>
             <div className="flex flex-col space-y-4 pb-25">
                 <GraficaBankRollAcumulado filtros={filtros} sesiones={sesiones} />
-                <GraficaBarrasGeneral filtros={filtros} sesiones={sesiones} />
                 <GraficaBalanceAcumuladoDiario filtros={filtros} sesiones={sesiones} />
-                {/* <GraficaWinRate filtros={filtros} sesiones={sesiones} /> */}
+                <GraficaGananciaPorCasino filtros={filtros} sesiones={sesiones} />
+                <GraficaBarrasGeneral filtros={filtros} sesiones={sesiones} />
             </div>
         </div>
     )

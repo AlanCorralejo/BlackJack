@@ -1,8 +1,9 @@
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart"
+import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "../ui/chart"
 import { Session } from "@/lib/types"
 import { FilterDate } from "@/lib/models/stats-graph-models"
 import { VscGraph } from "react-icons/vsc";
+import { GiPokerHand } from "react-icons/gi";
 
 interface GraficaBarrasGeneralProps {
     sesiones: Session[],
@@ -10,7 +11,7 @@ interface GraficaBarrasGeneralProps {
 }
 
 const GraficaBarrasGeneral = ({ sesiones, filtros }: GraficaBarrasGeneralProps) => {
-    
+
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
         "Septiempre", "Octubre", "Noviembre", "Diciembre"]
 
@@ -31,21 +32,26 @@ const GraficaBarrasGeneral = ({ sesiones, filtros }: GraficaBarrasGeneralProps) 
 
     const casinos = [...new Set(sesiones.map(x => x.casinoName))]
 
-    const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`
+    const getColor = (index: number) => {
+        const hue = (index * 137.508) % 360
+        return `hsl(${hue}, 65%, 55%)`
+    }
     const chartConfig = Object.fromEntries(
-        casinos.map((casino) => [
+        casinos.map((casino, index) => [
             casino,
             {
                 label: casino,
-                color: getRandomColor()
+                color: getColor(index)
             }
         ])
     ) as ChartConfig
     return (
         <div className="w-full flex flex-col space-y-4 border p-4 rounded-[10px]">
             <div className="flex items-center space-x-2">
-                <VscGraph fill="#32CD32" />
-                <p>Ganancias por mes</p>
+                <div className="bg-[#8B78DC40] p-2 rounded-[3px]">
+                    <GiPokerHand fill="#8B78DC" />
+                </div>
+                <p className="text-sm">Ganancias por mes</p>
             </div>
             <ChartContainer config={chartConfig}>
                 <BarChart
@@ -76,10 +82,12 @@ const GraficaBarrasGeneral = ({ sesiones, filtros }: GraficaBarrasGeneralProps) 
                             type="monotone"
                             strokeWidth={2}
                             fill={chartConfig[k].color}
+                            radius={4}
                         />
                     ))
-
                     }
+                    <ChartLegend content={<ChartLegendContent />} />
+
                 </BarChart>
             </ChartContainer>
         </div >

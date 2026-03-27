@@ -1,8 +1,9 @@
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 import { Session } from "@/lib/types";
 import { FilterDate } from "@/lib/models/stats-graph-models";
-import { BsGraphUpArrow } from "react-icons/bs";
+import { GiCardJoker } from "react-icons/gi";
+import { RiPokerSpadesFill } from "react-icons/ri";
 
 interface GraficaBalanceAcumuladoDiarioProps {
     sesiones: Session[],
@@ -19,7 +20,7 @@ const GraficaBalanceAcumuladoDiario = ({ sesiones, filtros }: GraficaBalanceAcum
 
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
         "Septiempre", "Octubre", "Noviembre", "Diciembre"]
-    const chartData = sesiones.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(x => Number(x.date.split('-')[0]) == filtros.year)
+    const chartData = sesiones.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(x => Number(x.date.split('-')[0]) == filtros.year)
         .filter(x => Number(x.date.split('-')[1]) == filtros.month)
         .filter(x => filtros.casino === '' || x.casinoName === filtros.casino)
         .reduce((acc, curr) => {
@@ -38,21 +39,22 @@ const GraficaBalanceAcumuladoDiario = ({ sesiones, filtros }: GraficaBalanceAcum
 
 
     const chartConfig = {
-        totalWin: {
+        ganancia: {
             label: "Ganancia",
             color: "#32CD32",
         },
     } satisfies ChartConfig
 
-
     return (
         <div className="w-full flex flex-col space-y-4 border p-4 rounded-[10px]">
             <div className="flex items-center space-x-2">
-                <BsGraphUpArrow fill="#32CD32" />
-                <p>Balance por sesión - {filtros.casino || "Todos"}</p>
+                <div className="bg-[#E0525240] p-2 rounded-[3px]">
+                    <RiPokerSpadesFill  fill="#E05252" />
+                </div>
+                <p className="text-sm">Balance por sesión - {filtros.casino || "Todos"}</p>
             </div>
             <ChartContainer config={chartConfig}>
-                <LineChart
+                <BarChart
                     accessibilityLayer
                     data={chartData}
                     margin={{
@@ -66,7 +68,7 @@ const GraficaBalanceAcumuladoDiario = ({ sesiones, filtros }: GraficaBalanceAcum
                         tickLine={false}
                         axisLine={false}
                         tickMargin={8}
-                        tickFormatter={(value) => `${value.split('-')[2]}-${meses[Number(value.split('-')[1]) - 1].slice(0,3)}`}
+                        tickFormatter={(value) => `${value.split('-')[2]}-${meses[Number(value.split('-')[1]) - 1].slice(0, 3)}`}
                     />
                     <YAxis
                         dataKey="totalWin"
@@ -78,14 +80,15 @@ const GraficaBalanceAcumuladoDiario = ({ sesiones, filtros }: GraficaBalanceAcum
                         cursor={false}
                         content={<ChartTooltipContent hideLabel />}
                     />
-                    <Line
-                        dataKey="totalWin"
-                        type="natural"
-                        strokeWidth={2}
-                        dot={false}
-                        stroke="#32CD32"
-                    />
-                </LineChart>
+                    <Bar dataKey="totalWin" radius={4}>
+                        {chartData.map((item, index) => (
+                            <Cell
+                                key={`cell-${index}`}
+                                fill={item.totalWin >= 0 ? "#41B29B" : "#E05252"}
+                            />
+                        ))}
+                    </Bar>
+                </BarChart>
             </ChartContainer>
         </div>
     )

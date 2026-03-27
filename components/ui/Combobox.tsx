@@ -50,7 +50,7 @@ export function ComboBox({ disabled, data, currentSelected, selectMessage, place
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn("w-full justify-between truncate", !currentSelected && "text-muted-foreground", className)}
+          className={cn("w-full justify-between truncate border border-primary! text-primary rounded-full", !currentSelected && "text-muted-foreground", className)}
           disabled={data.length === 0 || disabled}
         >
           {
@@ -64,7 +64,7 @@ export function ComboBox({ disabled, data, currentSelected, selectMessage, place
           {/* {currentSelected
             ? data.find((_) => _.value === Number(currentSelected))?.label
             : (labelText === "Todas" || labelText === "Todos") ? labelText : selectMessage} */}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-2 text-primary h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className={cn('p-0 w-(--radix-popover-trigger-width) min-w-50')}>

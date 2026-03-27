@@ -19,28 +19,30 @@ const GraficaBankRollAcumulado = ({ sesiones, filtros }: GraficaBankRollAcumulad
     const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
         "Septiempre", "Octubre", "Noviembre", "Diciembre"]
 
-    const chartData = sesiones.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(x => Number(x.date.split('-')[0]) === filtros.year)
+    const chartData = sesiones.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).filter(x => Number(x.date.split('-')[0]) === filtros.year)
         .reduce((acc, curr, index) => {
-            
-            const lastValue = acc[index -1]?.totalWin ? acc[index -1]?.totalWin : 0
-            
-            acc.push({date: curr.date, totalWin: lastValue + curr.totalWin})
+
+            const lastValue = acc[index - 1]?.totalWin ? acc[index - 1]?.totalWin : 0
+
+            acc.push({ date: curr.date, totalWin: lastValue + curr.totalWin })
             return acc
 
         }, [] as ChartConfigBankRoll[])
-        
+
     const chartConfig = {
         totalWin: {
             label: "Ganancia",
             color: "text-primary",
         },
     } satisfies ChartConfig
-    
+
     return (
         <div className="w-full flex flex-col space-y-4 border p-4 rounded-[10px]">
             <div className="flex items-center space-x-2">
-                <BsGraphUpArrow className="text-primary" />
-                <p>BankRoll Acumulado</p>
+                <div className="bg-[#C8A96E26] p-2 rounded-[3px]">
+                    <BsGraphUpArrow className="text-[#C8A96E]" />
+                </div>
+                <p className="text-sm">BankRoll Acumulado</p>
             </div>
             <ChartContainer config={chartConfig}>
                 <LineChart
@@ -51,13 +53,13 @@ const GraficaBankRollAcumulado = ({ sesiones, filtros }: GraficaBankRollAcumulad
                         right: 12,
                     }}
                 >
-                    <CartesianGrid />
+                    <CartesianGrid fill="#C8A96E26" />
                     <XAxis
                         dataKey="date"
                         tickLine={false}
                         axisLine={false}
                         tickMargin={8}
-                        tickFormatter={(value) => `${value.split('-')[2]}-${meses[Number(value.split('-')[1]) - 1].slice(0,3)}`}
+                        tickFormatter={(value) => `${value.split('-')[2]}-${meses[Number(value.split('-')[1]) - 1].slice(0, 3)}`}
                     />
                     <YAxis
                         dataKey="totalWin"
