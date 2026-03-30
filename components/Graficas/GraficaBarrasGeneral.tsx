@@ -74,6 +74,8 @@ const GraficaBarrasGeneral = ({ sesiones, filtros }: GraficaBarrasGeneralProps) 
                         tickLine={false}
                         tickMargin={2}
                         axisLine={false}
+                        tickFormatter={(value) => `$${value.toLocaleString("es-MX")}`}
+
                     />
                     <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                     {casinos.map((k, i) => (

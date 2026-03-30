@@ -49,7 +49,7 @@ const GraficaBalanceAcumuladoDiario = ({ sesiones, filtros }: GraficaBalanceAcum
         <div className="w-full flex flex-col space-y-4 border p-4 rounded-[10px]">
             <div className="flex items-center space-x-2">
                 <div className="bg-[#E0525240] p-2 rounded-[3px]">
-                    <RiPokerSpadesFill  fill="#E05252" />
+                    <RiPokerSpadesFill fill="#E05252" />
                 </div>
                 <p className="text-sm">Balance por sesión - {filtros.casino || "Todos"}</p>
             </div>
@@ -75,6 +75,7 @@ const GraficaBalanceAcumuladoDiario = ({ sesiones, filtros }: GraficaBalanceAcum
                         tickLine={false}
                         axisLine={false}
                         tickMargin={8}
+                        tickFormatter={(value) => `$${value.toLocaleString("es-MX")}`}
                     />
                     <ChartTooltip
                         cursor={false}

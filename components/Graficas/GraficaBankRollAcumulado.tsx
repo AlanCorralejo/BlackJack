@@ -66,6 +66,7 @@ const GraficaBankRollAcumulado = ({ sesiones, filtros }: GraficaBankRollAcumulad
                         tickLine={false}
                         axisLine={false}
                         tickMargin={8}
+                        tickFormatter={(value) => `$${value.toLocaleString("es-MX")}`}
                     />
                     <ChartTooltip
                         cursor={false}
