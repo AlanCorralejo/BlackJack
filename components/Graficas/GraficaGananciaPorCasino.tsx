@@ -53,22 +53,29 @@ const GraficaGananciaPorCasino = ({ sesiones, filtros }: GraficaGananciaPorCasin
                 </div>
                 <p className="text-sm">Balance por Casino</p>
             </div>
+            <div className="grid grid-cols-2 items-center">
+                <ChartContainer
+                    config={chartConfig}
+                    className="mx-auto aspect-square h-[150px]"
+                >
+                    <PieChart>
+                        <Pie data={chartData} dataKey="totalWin" />
+                    </PieChart>
+                </ChartContainer>
+                <div className="flex flex-col justify-center items-center flex-wrap space-y-2">
+                    {chartData.map((k, i) => (
+                        <div className="rounded-[10px] bg-secondary p-3 w-full" key={i}>
+                            <div className="flex items-center space-x-2">
+                                <span style={{ backgroundColor: k.fill }} className="flex w-2 h-2 rounded-[2px]"></span>
+                                <p className="text-sm text-gray-300">{k.casino}</p>
+                            </div>
+                            <p className="font-bold">${k.totalWin.toLocaleString("es-MX")}</p>
+                        </div>
 
-            <ChartContainer
-                config={chartConfig}
-            >
-                <PieChart>
-                    <Pie data={chartData} dataKey="totalWin" />
-                </PieChart>
-            </ChartContainer>
-            <div className="flex justify-center items-center flex-wrap space-x-2">
-                {chartData.map((k, i) => (
-                    <div className="flex items-center space-x-2" key={i}>
-                        <span style={{ backgroundColor: k.fill }} className="flex w-2 h-2 "></span>
-                        <p className="text-sm">{k.casino} - ${k.totalWin.toLocaleString("es-MX")}</p>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
+
         </div>
     )
 }
