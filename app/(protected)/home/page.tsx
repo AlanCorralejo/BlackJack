@@ -17,9 +17,10 @@ import { CirclePower } from "lucide-react"
 import { SlMenu } from "react-icons/sl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import StatsGraphics from "@/components/Graficas/stats-graphics"
+import CalendarioHistorial from "@/components/CalendarioHistorial"
 
 
-type Tab = "stats" | "history" | "graficas"
+type Tab = "stats" | "history" | "graficas" | "calendario"
 
 export default function Home() {
   const [sesiones, setSesiones] = useState<Session[]>([])
@@ -233,6 +234,13 @@ export default function Home() {
                 onClick={() => setActiveTab("graficas")}
               />
             </TabsTrigger>
+            <TabsTrigger value="calendario">
+              <TabButton
+                label="Calendario"
+                active={activeTab === "calendario"}
+                onClick={() => setActiveTab("calendario")}
+              />
+            </TabsTrigger>
           </TabsList>
           <div
             onTouchStart={handleTouchStart}
@@ -258,6 +266,9 @@ export default function Home() {
             </TabsContent>
             <TabsContent value="graficas">
               <StatsGraphics sesiones={sesiones} />
+            </TabsContent>
+            <TabsContent value="calendario">
+              <CalendarioHistorial sesiones={sesiones} />
             </TabsContent>
           </div>
 
