@@ -1,6 +1,7 @@
 import { Session } from "@/lib/types";
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 import { Calendar } from "./ui/calendar";
+import { useState } from "react";
 
 
 interface CalendarioHistorialProps {
@@ -8,9 +9,9 @@ interface CalendarioHistorialProps {
 }
 
 const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
-    const currentMonth = new Date().getMonth() + 1
-    const currentYear = new Date().getFullYear()
+    
     const currentDate = new Date()
+    const [date, setDate] = useState({month: new Date().getMonth() + 1, year: new Date().getFullYear()})
     const currendDateFormat = currentDate.toLocaleDateString('es-MX', {
         month: 'long',
         year: 'numeric'
@@ -18,7 +19,7 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
     const resultado = sesiones.reduce((acc, x) => {
         const [year, month] = x.date.split('-').map(Number);
 
-        if (year === currentYear && month === currentMonth) {
+        if (year === date.year && month === date.month) {
             acc.sesionesJugadas++;
 
             if (x.totalWin > 0) acc.sesionesGanadas++;
@@ -35,8 +36,8 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
     const { sesionesGanadas, sesionesPerdidas, sesionesJugadas } = resultado;
 
 
-    const gananciaMes = sesiones.filter(x => Number(x.date.split('-')[0]) === currentYear)
-        .filter(x => Number(x.date.split('-')[1]) === currentMonth)
+    const gananciaMes = sesiones.filter(x => Number(x.date.split('-')[0]) === date.year)
+        .filter(x => Number(x.date.split('-')[1]) === date.month)
         .reduce((acc, curr) => {
 
             acc += curr.totalWin
@@ -44,6 +45,12 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
             return acc
         }, 0)
 
+    const handleMonthChange = (date: Date) => {
+        const formatDate = date.toISOString().split('T')[0]
+        const month = formatDate.split('-')[1]
+        const year = formatDate.split('-')[0]
+        setDate({month: Number(month), year: Number(year)})
+    }
 
     return (
         <div className="px-4 space-y-4">
@@ -78,7 +85,8 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
             <div className="w-full h-full bg-secondary">
                 <Calendar
                     mode="single"
-                    className="border rounded-[10px] w-full h-full"
+                    className=" rounded-[10px] w-full h-full"
+                    onMonthChange={(v) => handleMonthChange(v)}
                     components={{
                         DayButton: ({ day, modifiers, ...props }) => {
 
