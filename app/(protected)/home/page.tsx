@@ -29,8 +29,8 @@ export default function Home() {
   const [isDark, setIsDark] = useState(false)
   const auth = getAuth(app);
 
-  const TABS: Tab[] = ["stats", "history", "graficas"]
-  const TAB_VALUES = ["resumen", "historial", "graficas"]
+  const TABS: Tab[] = ["stats", "history", "graficas", "calendario"]
+  const TAB_VALUES = ["resumen", "historial", "graficas", "calendario"]
   const touchStartX = useRef<number>(0)
   const [currentTabIndex, setCurrentTabIndex] = useState(0)
   const [sliding, setSliding] = useState<"left" | "right" | null>(null)
