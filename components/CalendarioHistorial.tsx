@@ -10,12 +10,14 @@ interface CalendarioHistorialProps {
 
 const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
     
-    const currentDate = new Date()
+    const [fullDate, setFullDate] = useState(new Date())
     const [date, setDate] = useState({month: new Date().getMonth() + 1, year: new Date().getFullYear()})
-    const currendDateFormat = currentDate.toLocaleDateString('es-MX', {
+    
+    const currentDateFormat = fullDate.toLocaleDateString('es-MX', {
         month: 'long',
         year: 'numeric'
     });
+
     const resultado = sesiones.reduce((acc, x) => {
         const [year, month] = x.date.split('-').map(Number);
 
@@ -50,13 +52,14 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
         const month = formatDate.split('-')[1]
         const year = formatDate.split('-')[0]
         setDate({month: Number(month), year: Number(year)})
+        setFullDate(date)
     }
 
     return (
         <div className="px-4 space-y-4">
             <div className="flex items-center justify-between p-4 border rounded-[10px] bg-secondary">
                 <div>
-                    <p className="text-muted-foreground capitalize">{currendDateFormat}</p>
+                    <p className="text-muted-foreground capitalize">{currentDateFormat}</p>
                     <p className={`font-bold text-xl ${gananciaMes > 0 ? 'text-success' : gananciaMes < 0 ? 'text-destructive' : 'text-white'}`}>
                         {gananciaMes > 0 ? "+" : gananciaMes < 0 ? "-" : ""}${gananciaMes}
                     </p>
