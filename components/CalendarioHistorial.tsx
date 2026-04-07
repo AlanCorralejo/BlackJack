@@ -44,6 +44,7 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
             return acc
         }, 0)
 
+
     return (
         <div className="px-4 space-y-4">
             <div className="flex items-center justify-between p-4 border rounded-[10px] bg-secondary">
@@ -78,6 +79,29 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
                 <Calendar
                     mode="single"
                     className="rounded-[10px] w-full"
+                    components={{
+                        DayButton: ({ day, modifiers, ...props }) => {
+
+                            const totalWinDias = sesiones.find(x => x.date === day.date.toISOString().split('T')[0])
+                            const totalWin = totalWinDias?.totalWin ?? 0
+                            return (
+                                <button
+                                    {...props}
+                                    className={`flex flex-col w-full h-full items-center justify-center rounded-[8px] text-sm font-medium transition-colors
+                                                           ${modifiers.selected ? "bg-primary text-primary-foreground " : ""}
+                                                           ${modifiers.today ? "ring-1 ring-primary/50 " : ""}
+                                                           ${totalWin > 0 ? "bg-success/20 text-success" : totalWin < 0 ? "bg-destructive/20 text-destructive" : ""}
+                                                           `}
+                                >
+                                    {day.date.getDate()}
+                                    <span
+                                        className={`h-1.5 w-1.5 rounded-full ${totalWin > 0 ? "bg-success" : totalWin < 0 ? "bg-destructive" : "hidden"}`}
+                                    >
+                                    </span>
+                                </button>
+                            )
+                        },
+                    }}
                 />
             </div>
         </div>
