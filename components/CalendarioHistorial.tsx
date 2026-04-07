@@ -75,10 +75,10 @@ const CalendarioHistorial = ({ sesiones }: CalendarioHistorialProps) => {
                 </div>
             </div>
 
-            <div className="border w-full rounded-[10px] bg-secondary">
+            <div className="w-full bg-secondary">
                 <Calendar
                     mode="single"
-                    className="rounded-[10px] w-full"
+                    className="border rounded-[10px] w-full"
                     components={{
                         DayButton: ({ day, modifiers, ...props }) => {
 
